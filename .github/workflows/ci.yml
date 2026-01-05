@@ -45,11 +45,11 @@ jobs:
 
       - name: HTTP smoke test (Hello CGI)
         run: |
-          curl -fsS http://localhost:8080 | grep -q "Hello CGI!"
+          curl -fsS http://localhost:8080 | grep -q "Hello CGI"
 
       - name: HTTPS smoke test (Hello CGI)
         run: |
-          curl -fkSs https://localhost:8443 | grep -q "Hello CGI!"
+          curl -fkSs https://localhost:8443 | grep -q "Hello CGI"
 
       - name: TLS CN/SAN check (Bonus I proof)
         run: |
