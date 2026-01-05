@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    
+    container_name: cgi-nginx-challenge
+    
+    # Port Mapping
+    # Host:Container
+    ports:
+      - "8080:80"      # HTTP
+      - "8443:443"     # HTTPS
+    
+    # Volume Mounts - WICHTIG für Aufgabe 3!
+    # Ermöglicht Content-Updates ohne Container Rebuild
+    volumes:
+      # HTML Content (editierbar ohne rebuild)
+      - ./html:/usr/share/nginx/html:ro
+      
+      # NGINX Config (für schnelle Config-Änderungen)
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      
+      # SSL Zertifikate (werden wir gleich erstellen)
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    
+    # Restart Policy
+    restart: unless-stopped
+    
+    # Health Check
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    
+    # Networks
+    networks:
+      - cgi-network
+    
+    # Environment Variables (optional)
+    environment:
+      - NGINX_HOST=localhost
+      - NGINX_PORT=80
+
+networks:
+  cgi-network:
+    driver: bridge
