@@ -1,9 +1,10 @@
-name: CI - NGINX (HTTP/HTTPS) Smoke Tests
+name: CI - NGINX HTTP/HTTPS Smoke Tests
 
 on:
   push:
-    branches: ["main"]
+    branches: ["master"]
   pull_request:
+    branches: ["master"]
 
 jobs:
   build-and-test:
@@ -13,11 +14,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Optional: zeigt Versionsinfos (hilft beim Debuggen)
       - name: Show versions
         run: |
           docker --version
-          docker compose version || docker-compose --version
+          docker compose version
           openssl version
 
       - name: Generate self-signed TLS certs
@@ -30,7 +30,7 @@ jobs:
           docker compose up -d --build
           docker compose ps
 
-      - name: Wait for service
+      - name: Wait for HTTP readiness
         run: |
           for i in {1..30}; do
             if curl -fsS http://localhost:8080 >/dev/null; then
@@ -51,10 +51,7 @@ jobs:
         run: |
           curl -fkSs https://localhost:8443 | grep -q "Hello CGI!"
 
-      # Bonus I Nachweis (CN/SAN passt)
-      # Wir testen den FQDN direkt via SNI gegen localhost:8443.
-      # (hosts-file im Runner ist nicht nötig, solange SNI gesetzt ist)
-      - name: TLS certificate CN/SAN check for automation-challenge.cgi.com
+      - name: TLS CN/SAN check (Bonus I proof)
         run: |
           CERT_INFO=$(openssl s_client -connect localhost:8443 -servername automation-challenge.cgi.com </dev/null 2>/dev/null \
             | openssl x509 -noout -subject -ext subjectAltName)
@@ -62,7 +59,7 @@ jobs:
           echo "$CERT_INFO" | grep -q "CN = automation-challenge.cgi.com"
           echo "$CERT_INFO" | grep -q "DNS:automation-challenge.cgi.com"
 
-      - name: Show logs (always)
+      - name: Logs (always)
         if: always()
         run: |
           docker compose logs --no-color | tail -n 300
