@@ -33,6 +33,7 @@ Füge zu `C:\Windows\System32\drivers\etc\hosts` hinzu:
 Dann: https://automation-challenge.cgi.com:8443
 
 ## Architektur
+```
 automation-challenge/
 ├── .github/
 │   └── workflows/
@@ -56,3 +57,4 @@ automation-challenge/
 ├── docker-compose.yml                # Infrastructure as Code (Aufgabe 1)
 ├── Dockerfile                        # NGINX Container Definition
 └── README.md                         # Diese Datei
+```
