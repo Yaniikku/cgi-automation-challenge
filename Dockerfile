@@ -13,7 +13,7 @@ COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
 RUN mkdir -p /etc/nginx/ssl
 
 # WICHTIG: HTML Content wird via Volume gemountet!
-# Das ermöglicht Updates ohne Container Rebuild (Aufgabe 3)
+# Das ermöglicht Updates ohne Container Rebuild
 # COPY wird hier NICHT verwendet für /usr/share/nginx/html
 
 # Exponiere Ports

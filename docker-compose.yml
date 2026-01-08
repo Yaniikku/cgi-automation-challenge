@@ -14,7 +14,7 @@ services:
       - "8080:80"      # HTTP
       - "8443:443"     # HTTPS
     
-    # Volume Mounts - WICHTIG für Aufgabe 3!
+    # Volume Mounts
     # Ermöglicht Content-Updates ohne Container Rebuild
     volumes:
       # HTML Content (editierbar ohne rebuild)
@@ -23,7 +23,7 @@ services:
       # NGINX Config (für schnelle Config-Änderungen)
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
       
-      # SSL Zertifikate (werden wir gleich erstellen)
+      # SSL Zertifikate
       - ./nginx/ssl:/etc/nginx/ssl:ro
     
     # Restart Policy
